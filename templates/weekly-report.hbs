@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{reportTitle}}</title>
+    <style>
+      {{{styles}}}
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <h1>{{reportTitle}}</h1>
+        <div class="hero-meta">
+          {{companyName}} | Reporting period: {{reportRange}}
+        </div>
+      </section>
+
+      <section class="grid">
+        {{#each kpis}}
+          <article class="kpi-card">
+            <div class="kpi-label">{{label}}</div>
+            <div class="kpi-value">{{value}}</div>
+            <div class="kpi-delta {{deltaClass}}">{{deltaText}}</div>
+          </article>
+        {{/each}}
+      </section>
+
+      <section class="two-column">
+        <article class="section">
+          <div class="section-title">
+            <h2>Weekly Sales Trend</h2>
+            <span class="badge">Chart.js</span>
+          </div>
+          <canvas id="salesTrendChart"></canvas>
+        </article>
+
+        <article class="section">
+          <div class="section-title">
+            <h2>Executive Summary</h2>
+            <span class="badge">Auto-generated</span>
+          </div>
+          <ul class="summary-list">
+            {{#each summaryPoints}}
+              <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        </article>
+      </section>
+
+      <section class="section" style="margin-top: 20px;">
+        <div class="section-title">
+          <h2>Top Accounts This Week</h2>
+          <span class="badge">{{topAccounts.length}} accounts</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Account</th>
+              <th>Revenue</th>
+              <th>Orders</th>
+              <th>Region</th>
+            </tr>
+          </thead>
+          <tbody>
+            {{#each topAccounts}}
+              <tr>
+                <td>{{name}}</td>
+                <td>{{revenue}}</td>
+                <td>{{orders}}</td>
+                <td>{{region}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <script src="{{chartScriptUrl}}"></script>
+    <script>
+      const chartData = {{{chartDataJson}}};
+
+      const context = document.getElementById("salesTrendChart");
+      const chart = new Chart(context, {
+        type: "line",
+        data: {
+          labels: chartData.labels,
+          datasets: [
+            {
+              label: "Sales",
+              data: chartData.values,
+              borderColor: "#0f766e",
+              backgroundColor: "rgba(15, 118, 110, 0.18)",
+              fill: true,
+              borderWidth: 3,
+              tension: 0.35,
+              pointRadius: 4,
+              pointHoverRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: (value) => "$" + Number(value).toLocaleString()
+              }
+            }
+          }
+        }
+      });
+
+      window.__REPORT_READY__ = Boolean(chart);
+    </script>
+  </body>
+</html>
