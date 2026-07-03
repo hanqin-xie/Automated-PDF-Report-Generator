@@ -8,6 +8,7 @@ const outputDir = path.join(projectRoot, "output");
 
 module.exports = {
   companyName: process.env.COMPANY_NAME || "Northstar Analytics",
+  dataSource: process.env.DATA_SOURCE || "mock",
   databaseUrl: process.env.DATABASE_URL,
   emailFrom: process.env.EMAIL_FROM,
   emailTo: (process.env.EMAIL_TO || "")
@@ -25,5 +26,7 @@ module.exports = {
     weeklySummarySql: path.join(projectRoot, "sql", "weekly_summary.sql")
   },
   reportTimezone: process.env.REPORT_TIMEZONE || "Asia/Singapore",
+  puppeteerExecutablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+  shouldSendEmail: process.env.SEND_EMAIL === "true",
   sendGridApiKey: process.env.SENDGRID_API_KEY
 };

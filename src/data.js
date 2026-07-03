@@ -62,6 +62,35 @@ async function loadTopAccounts(pool, sqlPath) {
   }));
 }
 
+function loadMockWeeklyMetrics() {
+  return {
+    totalSales: 201350,
+    previousTotalSales: 184920,
+    newUsers: 482,
+    orderCount: 156,
+    previousNewUsers: 437,
+    churnRate: 2.84,
+    previousChurnRate: 3.21
+  };
+}
+
+function loadMockDailySalesTrend() {
+  return {
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    values: [22800, 26450, 25100, 28750, 31400, 29800, 33050]
+  };
+}
+
+function loadMockTopAccounts() {
+  return [
+    { name: "Acme Corp", orders: 18, region: "North America", revenue: formatCurrency(48200) },
+    { name: "Globex", orders: 14, region: "APAC", revenue: formatCurrency(39100) },
+    { name: "Initech", orders: 11, region: "EMEA", revenue: formatCurrency(32500) },
+    { name: "Umbrella Health", orders: 9, region: "North America", revenue: formatCurrency(28800) },
+    { name: "Stellar Retail", orders: 8, region: "Europe", revenue: formatCurrency(24150) }
+  ];
+}
+
 function buildReportViewModel(metrics, trend, topAccounts, companyName, reportRange) {
   const salesDelta = buildDelta(metrics.totalSales, metrics.previousTotalSales);
   const userDelta = buildDelta(metrics.newUsers, metrics.previousNewUsers);
@@ -112,6 +141,9 @@ function buildReportViewModel(metrics, trend, topAccounts, companyName, reportRa
 
 module.exports = {
   buildReportViewModel,
+  loadMockDailySalesTrend,
+  loadMockTopAccounts,
+  loadMockWeeklyMetrics,
   loadDailySalesTrend,
   loadTopAccounts,
   loadWeeklyMetrics

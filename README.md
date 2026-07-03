@@ -46,7 +46,14 @@ npm install
 cp .env.example .env
 ```
 
-然后补全 `.env` 中的数据库连接和 SendGrid 配置。
+这个项目默认支持 `mock` 数据模式，所以即使没有真实业务表结构也可以直接跑通。
+
+然后复制并按需调整 `.env`：
+
+- `DATA_SOURCE=mock`：使用内置演示数据，适合作品集项目
+- `DATA_SOURCE=postgres`：连接 PostgreSQL 跑真实 SQL
+- `SEND_EMAIL=false`：只生成 HTML/PDF，不调用 SendGrid
+- `SEND_EMAIL=true`：开启邮件发送，同时需要填写 SendGrid 配置
 
 ## 运行
 
@@ -68,6 +75,8 @@ npm run send
 npm start
 ```
 
+如果 `.env` 中保持 `SEND_EMAIL=false`，`npm start` 也会只生成报告，不会真正发邮件。
+
 ## 定时调度
 
 如果你想每周一自动发送，可以用 `crontab`：
@@ -86,7 +95,7 @@ npm start
 - [sql/daily_sales_trend.sql](/Users/hanqin/Desktop/Automated-PDF-Report-Generator/sql/daily_sales_trend.sql)
 - [sql/top_accounts.sql](/Users/hanqin/Desktop/Automated-PDF-Report-Generator/sql/top_accounts.sql)
 
-你需要根据自己的真实表结构修改下面几个来源：
+如果你未来接入真实数据库，需要根据自己的真实表结构修改下面几个来源：
 
 - `orders`
 - `users`

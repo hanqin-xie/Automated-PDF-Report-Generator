@@ -1,9 +1,24 @@
+const fs = require("fs");
+const config = require("./config");
 const puppeteer = require("puppeteer");
 
-async function generatePdf(htmlPath, pdfPath) {
-  const browser = await puppeteer.launch({
+function resolveLaunchOptions() {
+  const executablePath = config.puppeteerExecutablePath;
+
+  if (executablePath && fs.existsSync(executablePath)) {
+    return {
+      executablePath,
+      headless: true
+    };
+  }
+
+  return {
     headless: true
-  });
+  };
+}
+
+async function generatePdf(htmlPath, pdfPath) {
+  const browser = await puppeteer.launch(resolveLaunchOptions());
 
   try {
     const page = await browser.newPage();

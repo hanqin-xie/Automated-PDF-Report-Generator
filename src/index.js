@@ -4,6 +4,9 @@ const { createPool } = require("./db");
 const {
   buildReportViewModel,
   loadDailySalesTrend,
+  loadMockDailySalesTrend,
+  loadMockTopAccounts,
+  loadMockWeeklyMetrics,
   loadTopAccounts,
   loadWeeklyMetrics
 } = require("./data");
@@ -27,6 +30,41 @@ function getReportRange() {
 }
 
 async function generateReport() {
+  if (config.dataSource === "mock") {
+    const viewModel = buildReportViewModel(
+      loadMockWeeklyMetrics(),
+      loadMockDailySalesTrend(),
+      loadMockTopAccounts(),
+      config.companyName,
+      getReportRange()
+    );
+
+    const chartScriptPath = path.join(
+      __dirname,
+      "..",
+      "node_modules",
+      "chart.js",
+      "dist",
+      "chart.umd.js"
+    );
+
+    const htmlPath = await renderHtml({
+      templatePath: config.paths.template,
+      cssPath: config.paths.css,
+      outputPath: config.paths.htmlOutput,
+      viewModel,
+      chartScriptPath
+    });
+
+    const pdfPath = await generatePdf(htmlPath, config.paths.pdfOutput);
+
+    return {
+      htmlPath,
+      pdfPath,
+      reportRange: viewModel.reportRange
+    };
+  }
+
   const pool = createPool();
 
   try {
@@ -100,7 +138,7 @@ async function main() {
   console.log(`HTML report generated at: ${result.htmlPath}`);
   console.log(`PDF report generated at: ${result.pdfPath}`);
 
-  if (!generateOnly) {
+  if (!generateOnly && config.shouldSendEmail) {
     await sendReportEmail({
       apiKey: config.sendGridApiKey,
       from: config.emailFrom,
@@ -112,6 +150,11 @@ async function main() {
     });
 
     console.log(`Email sent to: ${config.emailTo.join(", ")}`);
+    return;
+  }
+
+  if (!generateOnly) {
+    console.log("Email delivery skipped because SEND_EMAIL is not enabled.");
   }
 }
 
