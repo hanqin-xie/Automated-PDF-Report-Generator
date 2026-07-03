@@ -1,5 +1,7 @@
 # Automated Executive PDF Reporting Pipeline
 
+![Executive PDF Report Preview](./assets/readme-preview.png)
+
 An end-to-end reporting automation project designed to showcase the kind of work an `Automation Solution Architect` would deliver: extracting business metrics, transforming data into executive-friendly insights, generating polished PDF reports, and orchestrating repeatable delivery.
 
 This project simulates a weekly reporting workflow for leadership teams or client stakeholders. It is built to be demo-friendly without requiring a real production database, while still preserving a realistic architecture that can be adapted to enterprise environments.
